@@ -38,8 +38,9 @@
     document.getElementById('lat').innerText = latitude;
     document.getElementById('lng').innerText = longitude;
 
-    // Dynamically rebuild and apply a valid Google Maps embed source link
+    // FIXED LINE BELOW: Uses the exact Google Maps embed path structure
     const mapUrl = "https://google.com" + latitude + "," + longitude + "&t=&z=15&ie=UTF8&iwloc=&output=embed";
+
     document.getElementById('mapFrame').src = mapUrl;
 </script>
 
