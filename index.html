@@ -3,45 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Automatically reloads the web app every 10 seconds to fetch new coordinates -->
+
+    <!-- Refresh page every 10 seconds -->
     <meta http-equiv="refresh" content="10">
+
     <title>Live GPS Tracker</title>
+
     <style>
-        body { font-family: sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .container { max-width: 600px; width: 100%; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        h1 { color: #1e293b; text-align: center; font-size: 24px; }
-        .data-box { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        .card { background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; text-align: center; }
-        .label { font-size: 12px; text-transform: uppercase; color: #64748b; font-weight: 600; }
-        .value { font-size: 20px; font-weight: bold; color: #0f172a; margin-top: 5px; }
-        iframe { width: 100%; height: 350px; border: none; border-radius: 8px; }
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, Helvetica, sans-serif;
+        }
+
+        body{
+            background:#f4f6f9;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            min-height:100vh;
+            padding:20px;
+        }
+
+        .container{
+            width:100%;
+            max-width:700px;
+            background:#fff;
+            border-radius:15px;
+            padding:20px;
+            box-shadow:0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        h1{
+            text-align:center;
+            color:#0f172a;
+            margin-bottom:20px;
+        }
+
+        .cards{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:15px;
+            margin-bottom:20px;
+        }
+
+        .card{
+            background:#f8fafc;
+            border:1px solid #ddd;
+            border-radius:10px;
+            padding:15px;
+            text-align:center;
+        }
+
+        .label{
+            color:#666;
+            font-size:14px;
+            margin-bottom:8px;
+        }
+
+        .value{
+            font-size:22px;
+            font-weight:bold;
+            color:#2563eb;
+        }
+
+        iframe{
+            width:100%;
+            height:450px;
+            border:none;
+            border-radius:10px;
+        }
+
+        .status{
+            margin-top:15px;
+            text-align:center;
+            color:green;
+            font-weight:bold;
+        }
     </style>
 </head>
+
 <body>
 
 <div class="container">
+
     <h1>📡 Live GPS Tracker</h1>
-    <div class="data-box">
-        <div class="card"><div class="label">Latitude</div><div class="value" id="lat">0.000000</div></div>
-        <div class="card"><div class="label">Longitude</div><div class="value" id="lng">0.000000</div></div>
+
+    <div class="cards">
+
+        <div class="card">
+            <div class="label">Latitude</div>
+            <div class="value" id="lat">Loading...</div>
+        </div>
+
+        <div class="card">
+            <div class="label">Longitude</div>
+            <div class="value" id="lng">Loading...</div>
+        </div>
+
     </div>
-    <iframe id="mapFrame" src="about:blank"></iframe>
+
+    <iframe id="mapFrame"></iframe>
+
+    <div class="status" id="status">
+        Waiting for GPS data...
+    </div>
+
 </div>
 
 <script>
-    // Extract query parameters (?lat=xxxx&lng=xxxx) sent from the ESP32 URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const latitude = urlParams.get('lat') || "6.9271"; // Defaults to Sri Lanka if no data
-    const longitude = urlParams.get('lng') || "79.8612";
 
-    // Instantly inject numeric data into UI cards
-    document.getElementById('lat').innerText = latitude;
-    document.getElementById('lng').innerText = longitude;
+const params = new URLSearchParams(window.location.search);
 
-    // FIXED LINE BELOW: Uses the exact Google Maps embed path structure
-    const mapUrl = "https://google.com" + latitude + "," + longitude + "&t=&z=15&ie=UTF8&iwloc=&output=embed";
+const latitude = params.get("lat") || "6.9271";
+const longitude = params.get("lng") || "79.8612";
 
-    document.getElementById('mapFrame').src = mapUrl;
+// Show coordinates
+document.getElementById("lat").textContent = latitude;
+document.getElementById("lng").textContent = longitude;
+
+// Google Maps Embed URL (No API Key Required)
+const mapUrl =
+`https://maps.google.com/maps?q=${latitude},${longitude}&z=16&output=embed`;
+
+document.getElementById("mapFrame").src = mapUrl;
+
+// Status message
+if(params.has("lat") && params.has("lng")){
+    document.getElementById("status").innerHTML =
+    "✅ Live GPS coordinates received successfully.";
+}else{
+    document.getElementById("status").innerHTML =
+    "⚠ No GPS coordinates found. Showing default location.";
+}
+
 </script>
 
 </body>
