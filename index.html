@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Automatically reloads the web app every 10 seconds to fetch new coordinates -->
+    <meta http-equiv="refresh" content="10">
     <title>Live GPS Tracker</title>
     <style>
         body { font-family: sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
@@ -23,21 +25,20 @@
         <div class="card"><div class="label">Latitude</div><div class="value" id="lat">0.000000</div></div>
         <div class="card"><div class="label">Longitude</div><div class="value" id="lng">0.000000</div></div>
     </div>
-    <!-- Clean, unbroken iframe target template -->
     <iframe id="mapFrame" src="about:blank"></iframe>
 </div>
 
 <script>
-    // Extract query parameters (?lat=xxxx&lng=xxxx) sent from the ESP32
+    // Extract query parameters (?lat=xxxx&lng=xxxx) sent from the ESP32 URL
     const urlParams = new URLSearchParams(window.location.search);
-    const latitude = urlParams.get('lat') || "6.9271"; // Default to Sri Lanka if no data
+    const latitude = urlParams.get('lat') || "6.9271"; // Defaults to Sri Lanka if no data
     const longitude = urlParams.get('lng') || "79.8612";
 
-    // Display numbers on cards
+    // Instantly inject numeric data into UI cards
     document.getElementById('lat').innerText = latitude;
     document.getElementById('lng').innerText = longitude;
 
-    // Dynamically generate a valid, unbroken Google Maps URL
+    // Dynamically rebuild and apply a valid Google Maps embed source link
     const mapUrl = "https://google.com" + latitude + "," + longitude + "&t=&z=15&ie=UTF8&iwloc=&output=embed";
     document.getElementById('mapFrame').src = mapUrl;
 </script>
