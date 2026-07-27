@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub GPS Tracker</title>
+    <title>Live GPS Tracker</title>
     <style>
         body { font-family: sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
         .container { max-width: 600px; width: 100%; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
@@ -18,26 +18,28 @@
 <body>
 
 <div class="container">
-    <h1>📡 Live GitHub GPS Tracker</h1>
+    <h1>📡 Live GPS Tracker</h1>
     <div class="data-box">
         <div class="card"><div class="label">Latitude</div><div class="value" id="lat">0.000000</div></div>
         <div class="card"><div class="label">Longitude</div><div class="value" id="lng">0.000000</div></div>
     </div>
+    <!-- Clean, unbroken iframe target template -->
     <iframe id="mapFrame" src="about:blank"></iframe>
 </div>
 
 <script>
-    // Extract query values directly out of the browser URL string window
+    // Extract query parameters (?lat=xxxx&lng=xxxx) sent from the ESP32
     const urlParams = new URLSearchParams(window.location.search);
-    const latitude = urlParams.get('lat') || "6.9271"; // Defaults to Sri Lanka if blank
+    const latitude = urlParams.get('lat') || "6.9271"; // Default to Sri Lanka if no data
     const longitude = urlParams.get('lng') || "79.8612";
 
-    // Inject text data points directly onto the UI cards
+    // Display numbers on cards
     document.getElementById('lat').innerText = latitude;
     document.getElementById('lng').innerText = longitude;
 
-    // Direct layout adjustment onto the map iframe container URL
-    document.getElementById('mapFrame').src = `https://google.com{latitude},${longitude}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+    // Dynamically generate a valid, unbroken Google Maps URL
+    const mapUrl = "https://google.com" + latitude + "," + longitude + "&t=&z=15&ie=UTF8&iwloc=&output=embed";
+    document.getElementById('mapFrame').src = mapUrl;
 </script>
 
 </body>
